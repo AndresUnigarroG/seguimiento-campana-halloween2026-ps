@@ -1,0 +1,800 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Halloween 2026 · Seguimiento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --naranja: #E8520A;
+  --morado:  #4A1D8C;
+  --verde:   #1A6B3C;
+  --negro:   #1A1917;
+  --gris0:   #F7F6F4;
+  --gris1:   #E8E6E3;
+  --gris2:   #C8C6C2;
+  --gris3:   #7A7874;
+  --radio:   8px;
+  --ok-bg:   #DCFCE7; --ok-txt: #15803D;
+  --warn-bg: #FEF9C3; --warn-txt: #A16207;
+  --bad-bg:  #FEE2E2; --bad-txt: #B91C1C;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #fff;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--negro);
+  font-size: 13px;
+  padding: 1rem;
+}
+
+/* ── CHIPS LEYENDA ── */
+.leyenda-chips {
+  display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .85rem;
+}
+.lchip {
+  display: flex; align-items: center; gap: .3rem;
+  font-size: 12px; color: var(--negro);
+}
+.lchip-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── NAV ── */
+.nav-tabs {
+  display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1.1rem;
+}
+.tab-btn {
+  padding: .35rem .85rem;
+  border-radius: 20px;
+  border: 1.5px solid var(--gris1);
+  background: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 500;
+  color: var(--gris3);
+  cursor: pointer;
+  transition: all .15s;
+}
+.tab-btn:hover { border-color: var(--naranja); color: var(--naranja); }
+.tab-btn.activo { background: var(--negro); border-color: var(--negro); color: #fff; font-weight: 600; }
+
+/* ── KPI TILES ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .6rem;
+  margin-bottom: 1.1rem;
+}
+@media(max-width:600px){ .kpi-grid { grid-template-columns: repeat(2,1fr); } }
+.kpi-tile {
+  border: 1px solid var(--gris1);
+  border-radius: var(--radio);
+  padding: .8rem 1rem;
+}
+.kpi-label { font-size: 11px; color: var(--gris3); margin-bottom: .25rem; }
+.kpi-val {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px; font-weight: 700;
+}
+.kpi-sub { font-size: 11px; color: var(--gris3); margin-top: .15rem; }
+.kpi-ok   { color: var(--ok-txt); }
+.kpi-warn { color: var(--warn-txt); }
+.kpi-bad  { color: var(--bad-txt); }
+
+/* ── SECCIÓN TÍTULO ── */
+.sec-titulo {
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--gris3);
+  margin-bottom: .6rem;
+}
+
+/* ── TABLA RESULTADOS ── */
+.tabla-res {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: 12px;
+}
+.tabla-res th {
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .06em;
+  color: var(--gris3);
+  padding: .4rem .6rem;
+  border-bottom: 1px solid var(--gris1);
+  text-align: left;
+}
+.tabla-res th:not(:first-child) { text-align: right; }
+.tabla-res td {
+  padding: .6rem .6rem;
+  border-bottom: 1px solid var(--gris0);
+  vertical-align: middle;
+}
+.tabla-res tr:last-child td { border-bottom: none; }
+.td-right { text-align: right; }
+.td-punto { font-weight: 600; font-size: 13px; }
+.td-total {
+  font-family: 'Sora', sans-serif;
+  font-size: 15px; font-weight: 700;
+  text-align: right;
+}
+.td-meta-pct {
+  text-align: right;
+}
+.badge-pct {
+  display: inline-block;
+  padding: .18rem .5rem;
+  border-radius: 5px;
+  font-size: 11px; font-weight: 700;
+}
+.b-ok   { background: var(--ok-bg);   color: var(--ok-txt); }
+.b-warn { background: var(--warn-bg);  color: var(--warn-txt); }
+.b-bad  { background: var(--bad-bg);   color: var(--bad-txt); }
+
+/* mini barras productos */
+.mini-prod-row {
+  display: flex; gap: 3px; align-items: center;
+  font-size: 10px; color: var(--gris3);
+}
+.mini-prod-bar {
+  display: inline-block;
+  height: 14px; border-radius: 2px;
+  min-width: 2px;
+}
+
+/* tendencia semanal */
+.tend-chips { display: flex; gap: 3px; flex-wrap: nowrap; }
+.tend-chip {
+  font-family: 'Sora', sans-serif;
+  font-size: 11px; font-weight: 600;
+  padding: .15rem .4rem;
+  border-radius: 4px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* ── GRÁFICO BARRAS ── */
+.grafico-wrap { overflow-x: auto; }
+.grafico-svg  { display: block; width: 100%; min-width: 420px; }
+
+/* ── PANEL PUNTO ── */
+.punto-header {
+  display: flex; align-items: baseline; gap: .5rem;
+  margin-bottom: .85rem;
+}
+.punto-nombre {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px; font-weight: 700;
+}
+.punto-director { font-size: 12px; color: var(--gris3); }
+
+.prod-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: .6rem;
+  margin-bottom: 1rem;
+}
+@media(max-width:480px){ .prod-kpi-row { grid-template-columns: 1fr; } }
+
+.prod-tile {
+  border: 1px solid var(--gris1);
+  border-radius: var(--radio);
+  padding: .75rem .85rem;
+}
+.pt-prod { font-size: 10px; color: var(--gris3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .2rem; }
+.pt-val  {
+  font-family: 'Sora', sans-serif;
+  font-size: 24px; font-weight: 700;
+  line-height: 1;
+}
+.pt-sub  { font-size: 11px; color: var(--gris3); margin-top: .2rem; }
+.pt-barra { height: 4px; background: var(--gris1); border-radius: 2px; margin-top: .5rem; overflow: hidden; }
+.pt-fill  { height: 100%; border-radius: 2px; }
+
+/* mensaje director */
+.msg-box {
+  background: var(--gris0);
+  border: 1px solid var(--gris1);
+  border-radius: var(--radio);
+  padding: .85rem 1rem;
+  margin-top: 1rem;
+}
+.msg-label { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--gris3); font-weight: 600; margin-bottom: .5rem; }
+.msg-text  { font-size: 13px; line-height: 1.7; color: #2D2B28; }
+.msg-text strong { color: var(--negro); }
+.cn { color: var(--naranja); font-weight: 600; }
+.cm { color: var(--morado);  font-weight: 600; }
+.cv { color: var(--verde);   font-weight: 600; }
+
+/* nota contexto */
+.nota-box {
+  background: #FFF7ED;
+  border-left: 3px solid #F97316;
+  border-radius: 0 var(--radio) var(--radio) 0;
+  padding: .6rem .85rem;
+  font-size: 12px; color: #92400E; line-height: 1.55;
+  margin-bottom: 1rem;
+}
+
+/* ── GRAFICO DIARIO PUNTO ── */
+.grafico-diario-svg { display: block; width: 100%; min-width: 380px; }
+
+/* ── RITMO TABLE ── */
+.ritmo-tabla {
+  width: 100%; border-collapse: collapse;
+  margin-bottom: 1.1rem; font-size: 12px;
+}
+.ritmo-tabla th {
+  font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--gris3);
+  padding: .35rem .6rem; border-bottom: 1px solid var(--gris1); text-align: left;
+}
+.ritmo-tabla th:not(:first-child) { text-align: right; }
+.ritmo-tabla td { padding: .5rem .6rem; border-bottom: 1px solid var(--gris0); vertical-align: middle; }
+.ritmo-tabla tr:last-child td { border-bottom: none; }
+.ritmo-prod-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: middle; }
+.ritmo-bar-wrap { height: 6px; background: var(--gris1); border-radius: 3px; overflow: hidden; margin-top: 3px; }
+.ritmo-bar-fill { height: 100%; border-radius: 3px; }
+.ritmo-tag-ok   { font-size: 10px; font-weight: 700; color: var(--ok-txt);   background: var(--ok-bg);   padding: .1rem .4rem; border-radius: 4px; }
+.ritmo-tag-warn { font-size: 10px; font-weight: 700; color: var(--warn-txt); background: var(--warn-bg); padding: .1rem .4rem; border-radius: 4px; }
+.ritmo-tag-bad  { font-size: 10px; font-weight: 700; color: var(--bad-txt);  background: var(--bad-bg);  padding: .1rem .4rem; border-radius: 4px; }
+
+/* producto resumen cards */
+.prod-resumen-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: .6rem;
+  margin-bottom: 1.2rem;
+}
+@media(max-width:520px){ .prod-resumen-grid { grid-template-columns: 1fr; } }
+.prod-resumen-card {
+  border: 1px solid var(--gris1); border-radius: var(--radio); padding: .75rem .9rem;
+}
+.prc-nombre { font-size: 11px; font-weight: 600; color: var(--gris3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .35rem; }
+.prc-val { font-family: 'Sora', sans-serif; font-size: 20px; font-weight: 700; line-height: 1; }
+.prc-sub { font-size: 11px; color: var(--gris3); margin-top: .18rem; margin-bottom: .5rem; }
+.prc-ritmos { display: flex; justify-content: space-between; font-size: 11px; margin-top: .4rem; }
+.prc-ritmo-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.prc-ritmo-label { font-size: 9px; color: var(--gris3); text-transform: uppercase; letter-spacing: .05em; }
+.prc-ritmo-val { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 13px; }
+.prc-barra { height: 4px; background: var(--gris1); border-radius: 2px; margin-top: .4rem; overflow: hidden; }
+.prc-fill { height: 100%; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- LEYENDA -->
+<div class="leyenda-chips">
+  <div class="lchip"><span class="lchip-dot" style="background:var(--naranja)"></span>Cajita Hechizada</div>
+  <div class="lchip"><span class="lchip-dot" style="background:var(--morado)"></span>Hechizos de Sabor (dips)</div>
+  <div class="lchip"><span class="lchip-dot" style="background:var(--verde)"></span>Postre Drácula</div>
+</div>
+
+<!-- NAV -->
+<div class="nav-tabs">
+  <button class="tab-btn activo" onclick="setTab('general',this)">Resumen general</button>
+  <button class="tab-btn" onclick="setTab('Avenida',this)">Avenida</button>
+  <button class="tab-btn" onclick="setTab('Centro',this)">Centro</button>
+  <button class="tab-btn" onclick="setTab('Principal',this)">Principal</button>
+  <button class="tab-btn" onclick="setTab('Unicentro',this)">Unicentro</button>
+  <button class="tab-btn" onclick="setTab('Domicilios',this)">Domicilios</button>
+</div>
+
+<!-- CONTENIDO -->
+<div id="contenido"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// DATOS
+// ─────────────────────────────────────────────────────────────────────────────
+const CAMP_DIAS = 29;
+const SEMANAS = ['Sem 1','Sem 2'];   // se añaden semanas con cada actualización
+
+// Meta campaña completa (escenario moderado)
+const META = {
+  Avenida:    { c:81,  d:323, p:99  },
+  Centro:     { c:144, d:450, p:99  },
+  Principal:  { c:104, d:543, p:121 },
+  Unicentro:  { c:415, d:390, p:99  },
+  Domicilios: { c:56,  d:194, p:132 }
+};
+
+// Ventas reales acumuladas S1+S2 (7–21 oct, 15 días)
+const REAL = {
+  Avenida:    { c:47,  d:217, p:52  },
+  Centro:     { c:56,  d:256, p:47  },
+  Principal:  { c:68,  d:381, p:60  },
+  Unicentro:  { c:149, d:159, p:85  },
+  Domicilios: { c:31,  d:136, p:74  }
+};
+
+// Ventas por semana (para gráfico acumulado por semanas)
+// Cada entrada = [cajita_total, dips_total, postre_total] esa semana
+const SERIES_SEM = {
+  Avenida:    [[23,131,26],[24,86,26]],
+  Centro:     [[24,163,34],[32,93,13]],
+  Principal:  [[46,227,37],[22,154,23]],
+  Unicentro:  [[79,90,42], [70,69,43]],
+  Domicilios: [[15,71,38], [16,65,36]]
+};
+
+// Ventas diarias S1+S2 (para gráfico de punto)
+// Festivo = lunes 12 oct (índice 5), Marchas = miércoles 14 oct (índice 7)
+const DIARIO = {
+  dias: ['7-oct','8-oct','9-oct','10-oct','11-oct','12-oct','13-oct','14-oct',
+         '15-oct','16-oct','17-oct','18-oct','19-oct','20-oct','21-oct'],
+  festivo: [false,false,false,false,false,true,false,false, false,false,false,false,false,false,false],
+  marchas: [false,false,false,false,false,false,false,true,  false,false,false,false,false,false,false],
+  Principal:  { c:[5,8,7,7,7,4,2,6,   1,3,9,4,1,3,1],   d:[7,25,27,51,37,28,13,39, 16,21,35,24,18,20,20],  p:[1,8,4,7,9,6,0,2,  3,5,5,7,1,1,1]  },
+  Centro:     { c:[2,2,2,5,8,1,2,2,   2,8,8,7,1,3,3],   d:[15,18,28,27,27,18,20,10, 17,19,14,11,22,7,3],   p:[2,8,3,6,7,1,5,2,  0,4,1,1,7,0,0]  },
+  Unicentro:  { c:[15,15,3,17,12,3,4,10, 1,18,23,11,3,9,5], d:[18,19,5,4,12,12,9,11, 10,11,11,11,6,12,8],  p:[5,5,3,12,5,7,3,2, 11,7,6,5,5,9,0] },
+  Avenida:    { c:[2,1,7,5,5,1,2,0,   3,5,9,4,1,0,2],   d:[14,8,28,18,20,14,17,12,  10,7,17,22,7,9,14],   p:[4,1,2,7,3,5,1,3,  3,2,0,13,1,3,4] },
+  Domicilios: { c:[0,1,1,3,5,4,1,0,   1,6,2,5,0,0,2],   d:[7,7,5,14,8,11,6,13,      11,5,13,19,2,7,8],    p:[3,3,5,4,10,8,1,4, 3,4,6,15,6,1,1] }
+};
+
+// Info directores y contexto
+const INFO = {
+  Avenida:    { director:'Viviana', contexto:'⚠️ Sem 1 con eventos especiales: festivo lunes 12 oct y marchas miércoles 14 oct impulsaron el flujo. El viernes 9 fue el mejor día en todos los productos. Los sábados son de alto tráfico para llevar — el 0 cajitas del sábado 12 es una oportunidad concreta para la semana 2.' },
+  Centro:     { director:'Jennifer', contexto:'⚠️ Sem 1 con eventos especiales: festivo lunes 12 oct y marchas miércoles 14 oct favorecieron el flujo. El promedio de dips puede caer en semanas sin estos eventos — el ritmo base real sin eventos está alrededor de 18/día.' },
+  Principal:  { director:'Wilson', contexto:'⚠️ Sem 1 con eventos especiales: festivo lunes 12 oct y marchas miércoles 14 oct impulsaron la semana. Wilson tuvo 51 dips el sábado 10 — el mejor día individual en dips de toda la red.' },
+  Unicentro:  { director:'Jaime', contexto:'⚠️ Sem 1 con festivo lunes 12 oct y marchas miércoles 14 oct. Unicentro tiene la meta de cajita más alta de la red (415 und). Cajita está rezagada respecto a su propia meta — es la prioridad número 1. Dips y postre también necesitan acelerar.' },
+  Domicilios: { director:'Nancy', contexto:'⚠️ Sem 1 con festivo lunes 12 oct y marchas miércoles 14 oct. Canal históricamente fuerte en postre — el domingo 11 con 10 postres fue el mejor día en ese producto en cualquier punto de la red. Los ceros en cajita (días 7 y 14) son la tarea pendiente.' }
+};
+
+const MENSAJES = {
+  Avenida: (r,m,pc,py) => `<strong>Hola Viviana,</strong> aquí el resumen de la semana 1.<br><br>
+<span class="cm">Los Hechizos de Sabor van muy bien: ${r.d} acumulados</span> (${pc.d}% de la meta de campaña). El viernes 9 con 28 dips muestra lo que el punto puede cuando el equipo está enfocado.<br><br>
+<span class="cn">Cajita: ${r.c} unidades.</span> Hay variabilidad grande — hay que evitar los ceros en fin de semana, que es cuando llega más tráfico familiar. Piso de 3 cajitas/día es el objetivo.<br><br>
+<span class="cv">Postre Drácula: ${r.p} unidades.</span> El sábado 10 fue buen día (7). Los fines de semana son la ventana para el postre — todavía no la estamos aprovechando del todo.<br><br>
+<strong>Proyección al ritmo actual:</strong> Cajitas ~${py.c} · Dips ~${py.d} · Postres ~${py.p}. El foco de la semana 2: regularidad en cajita y postre.`,
+
+  Centro: (r,m,pc,py) => `<strong>Hola Jennifer,</strong> aquí el balance de la semana 1 en Centro.<br><br>
+<span class="cm">Los dips arrancan sólido: ${r.d} en 8 días</span> (${pc.d}%). Ojo: el festivo y las marchas inflaron dos días — el ritmo base real está más cerca de 18/día. Eso sigue siendo bueno, pero hay que sostenerlo sin esos apoyos.<br><br>
+<span class="cn">Cajita: ${r.c} unidades</span> (${pc.c}%). El ritmo necesita acelerar. La cajita funciona bien con pedidos familiares — identificar activamente esos clientes en caja es la táctica.<br><br>
+<span class="cv">Postre: ${r.p} unidades</span> (${pc.p}%). Hay días muy buenos (8 el jueves 8) y días muy flojos. La consistencia es el desafío: el postre se vende cuando el equipo lo menciona, no cuando el cliente lo descubre.<br><br>
+<strong>Proyección al ritmo actual:</strong> Cajitas ~${py.c} · Dips ~${py.d} · Postres ~${py.p}.`,
+
+  Principal: (r,m,pc,py) => `<strong>Hola Wilson,</strong> primera semana de Halloween cerrada.<br><br>
+<span class="cm">Los Hechizos de Sabor vuelan: ${r.d} en 8 días</span> (${pc.d}%). Ese 51 del sábado 10 fue el mejor día individual en dips de toda la red. El festivo y las marchas ayudaron a dos días clave — el ritmo base está más cerca de 22–27/día, que igual es muy sólido.<br><br>
+<span class="cn">Cajita: ${r.c} unidades</span> (${pc.c}%). Vas bien en ritmo. El 2 del lunes 12 (festivo, día de alto tráfico) llama la atención — es un día donde la cajita debería ser protagonista.<br><br>
+<span class="cv">Postre: ${r.p} unidades</span> (${pc.p}%). Ritmo por debajo del necesario. El 0 del lunes 12 es la señal más clara: en un día festivo, el postre debería ofrecerse activamente en cada pedido.<br><br>
+<strong>Proyección al ritmo actual:</strong> Cajitas ~${py.c} · Dips ~${py.d} · Postres ~${py.p}. Campaña fuerte en dips; postre es la tarea de la semana 2.`,
+
+  Unicentro: (r,m,pc,py) => `<strong>Hola Jaime,</strong> aquí el balance de la semana 1 en Unicentro.<br><br>
+<span class="cn">La Cajita arrancó muy bien: ${r.c} en 8 días</span> (${pc.c}%). Unicentro tiene la meta de cajitas más alta de toda la red y va en el mejor ritmo. El viernes 9 fue muy flojo (3) — hay que entender si fue operativo o de demanda.<br><br>
+<span class="cm">Los Hechizos de Sabor son el foco urgente: ${r.d} acumulados</span> (${pc.d}%). Con ${(r.d/8).toFixed(1)}/día y necesitando ${(m.d/29).toFixed(1)}/día, estamos muy rezagados. El dip en Unicentro tiene que entrar como oferta activa al momento de pedir — "¿Lo acompañamos con un Hechizo de Sabor?" como parte del guión.<br><br>
+<span class="cv">Postre Drácula: ${r.p} unidades</span> (${pc.p}%). El sábado 10 con 12 muestra el potencial. El desafío es hacer que ese ritmo sea la norma, no la excepción.<br><br>
+<strong>Proyección al ritmo actual:</strong> Cajitas ~${py.c} · Dips ~${py.d} · Postres ~${py.p}. Cajitas van, dips y postre necesitan cambio de marcha urgente.`,
+
+  Domicilios: (r,m,pc,py) => `<strong>Hola Nancy,</strong> primera semana de Halloween lista.<br><br>
+<span class="cv">El Postre Drácula es la estrella del canal: ${r.p} en 8 días</span> (${pc.p}%). El sábado 11 con 10 postres fue el mejor día en ese producto en cualquier punto de la red. Domicilios históricamente lidera en postre — y esta semana lo confirma.<br><br>
+<span class="cm">Hechizos de Sabor: ${r.d} acumulados</span> (${pc.d}%). Levemente por debajo del ritmo necesario. En domicilios, el dip tiene que aparecer como sugerencia al confirmar el pedido o como descripción destacada en la app — sin ese empuje el cliente no lo añade.<br><br>
+<span class="cn">Cajita: ${r.c} unidades</span> (${pc.c}%). Los días 7 y 14 con 0 cajitas son la señal: en domicilios la cajita no se vende sola. "Para el niño del grupo" en el flujo de pedido puede transformar el resultado.<br><br>
+<strong>Proyección al ritmo actual:</strong> Cajitas ~${py.c} · Dips ~${py.d} · Postres ~${py.p}. Canal fuerte en postre; dips y cajita necesitan más presencia activa en el flujo de pedido.`
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UTILIDADES
+// ─────────────────────────────────────────────────────────────────────────────
+const PUNTOS = ['Avenida','Centro','Principal','Unicentro','Domicilios'];
+const fmt = n => Math.round(n).toLocaleString('es-CO');
+const fmtCOP = n => '$'+Math.round(n).toLocaleString('es-CO');
+const pct = (r,m) => Math.round(r/m*100);
+const pctS = (r,m) => (r/m*100).toFixed(1)+'%';
+const proy = (r,dias=8) => Math.round(r/dias*CAMP_DIAS);
+const claseBadge = p => p>=52?'b-ok':p>=35?'b-warn':'b-bad';
+const textoEstado = p => p>=52?'✓':'✗';
+const colorPct = p => p>=52?'var(--ok-txt)':p>=35?'var(--warn-txt)':'var(--bad-txt)';
+
+// colores semana para tendencia
+const COLORES_SEM = ['#2563EB','#D97706','#16A34A','#9333EA','#DC2626'];
+
+// Días transcurridos y restantes
+const DIAS_REALES = 15;
+const DIAS_REST = CAMP_DIAS - DIAS_REALES;
+
+// Ritmo actual y necesario por producto para un punto
+function ritmos(punto) {
+  const r = REAL[punto], m = META[punto];
+  return {
+    c: { actual: r.c/DIAS_REALES, necesario: (m.c-r.c)/DIAS_REST },
+    d: { actual: r.d/DIAS_REALES, necesario: (m.d-r.d)/DIAS_REST },
+    p: { actual: r.p/DIAS_REALES, necesario: (m.p-r.p)/DIAS_REST }
+  };
+}
+
+// Tabla de ritmo por producto para un punto
+function tablaRitmo(punto) {
+  const r = REAL[punto], m = META[punto];
+  const rt = ritmos(punto);
+  const prods = [
+    { key:'c', nombre:'Cajita Hechizada', color:'var(--naranja)' },
+    { key:'d', nombre:'Hechizos de Sabor', color:'var(--morado)' },
+    { key:'p', nombre:'Postre Drácula', color:'var(--verde)' }
+  ];
+  const filas = prods.map(pr => {
+    const rv = r[pr.key], mv = m[pr.key];
+    const ra = rt[pr.key].actual, rn = rt[pr.key].necesario;
+    const ok = ra >= rn;
+    const tagClass = ra >= rn ? 'ritmo-tag-ok' : ra >= rn*0.8 ? 'ritmo-tag-warn' : 'ritmo-tag-bad';
+    const tagTxt = ra >= rn ? '✓ En ritmo' : ra >= rn*0.8 ? '⚡ Acelerar' : '⚠ Rezagado';
+    const pctBar = Math.min(ra/Math.max(rn,0.1)*100, 100);
+    return `<tr>
+      <td><span class="ritmo-prod-dot" style="background:${pr.color}"></span>${pr.nombre}</td>
+      <td style="text-align:right;font-family:'Sora',sans-serif;font-weight:700">${rv}</td>
+      <td style="text-align:right;color:var(--gris3)">${mv}</td>
+      <td style="text-align:right">
+        <div style="font-size:11px;color:var(--gris3)">${ra.toFixed(1)}/día actual</div>
+        <div class="ritmo-bar-wrap" style="width:70px;display:inline-block">
+          <div class="ritmo-bar-fill" style="width:${pctBar.toFixed(0)}%;background:${pr.color}"></div>
+        </div>
+      </td>
+      <td style="text-align:right;color:var(--gris3)">${rn.toFixed(1)}/día</td>
+      <td style="text-align:right"><span class="${tagClass}">${tagTxt}</span></td>
+    </tr>`;
+  }).join('');
+  return `<div class="sec-titulo">Ritmo actual vs. ritmo necesario para llegar a la meta</div>
+  <table class="ritmo-tabla">
+    <thead><tr>
+      <th>Producto</th><th style="text-align:right">Vendido</th><th style="text-align:right">Meta</th>
+      <th style="text-align:right">Ritmo actual</th><th style="text-align:right">Ritmo necesario</th><th style="text-align:right">Estado</th>
+    </tr></thead>
+    <tbody>${filas}</tbody>
+  </table>`;
+}
+
+// Cards de producto para resumen general
+function prodResumenCards() {
+  let totR={c:0,d:0,p:0}, totM={c:0,d:0,p:0};
+  PUNTOS.forEach(p => {
+    totR.c+=REAL[p].c; totR.d+=REAL[p].d; totR.p+=REAL[p].p;
+    totM.c+=META[p].c; totM.d+=META[p].d; totM.p+=META[p].p;
+  });
+  const prods = [
+    { key:'c', nombre:'Cajita Hechizada', color:'var(--naranja)' },
+    { key:'d', nombre:'Hechizos de Sabor', color:'var(--morado)' },
+    { key:'p', nombre:'Postre Drácula', color:'var(--verde)' }
+  ];
+  return `<div class="sec-titulo">Progreso por producto — toda la red</div>
+  <div class="prod-resumen-grid">` +
+  prods.map(pr => {
+    const rv = totR[pr.key], mv = totM[pr.key];
+    const raActual = rv/DIAS_REALES;
+    const raNec = (mv-rv)/DIAS_REST;
+    const pBar = Math.min(rv/mv*100, 100);
+    const tagClass = raActual >= raNec ? 'ritmo-tag-ok' : raActual >= raNec*0.8 ? 'ritmo-tag-warn' : 'ritmo-tag-bad';
+    const tagTxt = raActual >= raNec ? '✓ En ritmo' : raActual >= raNec*0.8 ? '⚡ Acelerar' : '⚠ Rezagado';
+    return `<div class="prod-resumen-card">
+      <div class="prc-nombre"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${pr.color};margin-right:4px;vertical-align:middle"></span>${pr.nombre}</div>
+      <div class="prc-val" style="color:${pr.color}">${rv}</div>
+      <div class="prc-sub">de ${mv} meta · ${pctS(rv,mv)}</div>
+      <div class="prc-barra"><div class="prc-fill" style="width:${pBar.toFixed(0)}%;background:${pr.color}"></div></div>
+      <div class="prc-ritmos" style="margin-top:.6rem">
+        <div class="prc-ritmo-item">
+          <span class="prc-ritmo-label">Ritmo actual</span>
+          <span class="prc-ritmo-val" style="color:${pr.color}">${raActual.toFixed(1)}/día</span>
+        </div>
+        <div class="prc-ritmo-item">
+          <span class="prc-ritmo-label">Ritmo necesario</span>
+          <span class="prc-ritmo-val" style="color:var(--gris3)">${raNec.toFixed(1)}/día</span>
+        </div>
+        <div class="prc-ritmo-item">
+          <span class="prc-ritmo-label">Estado</span>
+          <span class="${tagClass}">${tagTxt}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('') + `</div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GRÁFICO BARRAS AGRUPADAS POR SEMANA — TODOS LOS PUNTOS
+// ─────────────────────────────────────────────────────────────────────────────
+function graficoSemanas(){
+  // Para resumen: total por punto por semana
+  const W=560, H=180, pad={t:20,r:10,b:36,l:40};
+  const innerW=W-pad.l-pad.r, innerH=H-pad.t-pad.b;
+  const nSems = SEMANAS.length;
+  const nPuntos = PUNTOS.length;
+  const coloresPunto = ['#2563EB','#D97706','#16A34A','#9333EA','#DC2626'];
+
+  // totales por punto × semana
+  const data = PUNTOS.map(p =>
+    SERIES_SEM[p].map(sem => sem[0]+sem[1]+sem[2])
+  );
+  const allV = data.flat();
+  const maxV = Math.max(...allV, 1);
+
+  const semW = innerW / nSems;
+  const barW = (semW - 8) / nPuntos;
+  const gap = 1;
+
+  let bars='', labels='';
+  SEMANAS.forEach((sem,si) => {
+    const x0 = pad.l + si*semW + 4;
+    PUNTOS.forEach((p,pi) => {
+      const v = data[pi][si] ?? 0;
+      const bh = (v/maxV)*innerH;
+      const bx = x0 + pi*(barW+gap);
+      const by = pad.t + innerH - bh;
+      bars += `<rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${(barW).toFixed(1)}" height="${bh.toFixed(1)}" rx="2" fill="${coloresPunto[pi]}" opacity=".85"/>`;
+    });
+    labels += `<text x="${(pad.l+si*semW+semW/2).toFixed(1)}" y="${H-pad.b+14}" text-anchor="middle" fill="#7A7874" font-size="10">${sem}</text>`;
+  });
+
+  // grid
+  let grid='';
+  [.25,.5,.75,1].forEach(f => {
+    const y = pad.t + innerH*(1-f);
+    const v = Math.round(f*maxV);
+    grid += `<line x1="${pad.l}" x2="${W-pad.r}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#E8E6E3" stroke-width="1"/>`;
+    grid += `<text x="${pad.l-4}" y="${(y+4).toFixed(1)}" text-anchor="end" fill="#7A7874" font-size="9">${v}</text>`;
+  });
+
+  // leyenda
+  let ley='';
+  PUNTOS.forEach((p,i) => {
+    ley += `<rect x="${pad.l+i*80}" y="${H-pad.b+22}" width="8" height="8" rx="2" fill="${coloresPunto[i]}"/>`;
+    ley += `<text x="${pad.l+i*80+11}" y="${H-pad.b+30}" fill="#7A7874" font-size="9">${p}</text>`;
+  });
+
+  return `<svg class="grafico-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    ${grid}
+    <line x1="${pad.l}" x2="${pad.l}" y1="${pad.t}" y2="${pad.t+innerH}" stroke="#E8E6E3"/>
+    <line x1="${pad.l}" x2="${W-pad.r}" y1="${pad.t+innerH}" y2="${pad.t+innerH}" stroke="#E8E6E3"/>
+    ${bars}${labels}${ley}
+  </svg>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GRÁFICO DIARIO (por punto, 3 productos)
+// ─────────────────────────────────────────────────────────────────────────────
+function graficoDiario(punto){
+  const ser = DIARIO[punto];
+  const dias = DIARIO.dias;
+  const W=520, H=140, pad={t:16,r:10,b:38,l:32};
+  const innerW=W-pad.l-pad.r, innerH=H-pad.t-pad.b;
+  const N=dias.length;
+  const allV=[...ser.c,...ser.d,...ser.p];
+  const maxV=Math.max(...allV,1);
+  const bW=innerW/N;
+  const subW=(bW-6)/3;
+  const cols=['var(--naranja)','var(--morado)','var(--verde)'];
+
+  let bars='';
+  dias.forEach((dia,i) => {
+    [ser.c[i],ser.d[i],ser.p[i]].forEach((v,j) => {
+      const bh=(v/maxV)*innerH;
+      const bx=pad.l+i*bW+3+j*(subW+1);
+      const by=pad.t+innerH-bh;
+      bars+=`<rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${subW.toFixed(1)}" height="${bh.toFixed(1)}" rx="2" fill="${cols[j]}" opacity=".85"/>`;
+    });
+    // label eje x
+    bars+=`<text x="${(pad.l+i*bW+bW/2).toFixed(1)}" y="${H-pad.b+12}" text-anchor="middle" fill="#7A7874" font-size="8">${dia}</text>`;
+    // marcas especiales
+    if(DIARIO.festivo[i]) bars+=`<text x="${(pad.l+i*bW+bW/2).toFixed(1)}" y="${H-pad.b+22}" text-anchor="middle" fill="#F97316" font-size="8">F</text>`;
+    if(DIARIO.marchas[i]) bars+=`<text x="${(pad.l+i*bW+bW/2).toFixed(1)}" y="${H-pad.b+22}" text-anchor="middle" fill="#8B5CF6" font-size="8">M</text>`;
+  });
+
+  let grid='';
+  [.5,1].forEach(f => {
+    const y=pad.t+innerH*(1-f);
+    const v=Math.round(f*maxV);
+    grid+=`<line x1="${pad.l}" x2="${W-pad.r}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#E8E6E3" stroke-width="1"/>`;
+    grid+=`<text x="${pad.l-3}" y="${(y+4).toFixed(1)}" text-anchor="end" fill="#7A7874" font-size="8">${v}</text>`;
+  });
+
+  const ley = cols.map((c,i) =>
+    `<circle cx="${pad.l+i*72}" cy="${pad.t-5}" r="4" fill="${c}"/>` +
+    `<text x="${pad.l+i*72+8}" y="${pad.t-1}" fill="#7A7874" font-size="9">${['Cajita','Dips','Postre'][i]}</text>`
+  ).join('') +
+  `<text x="${W-pad.r}" y="${pad.t-1}" text-anchor="end" fill="#C8C6C2" font-size="8">F=Festivo M=Marchas</text>`;
+
+  return `<svg class="grafico-diario-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    ${grid}
+    <line x1="${pad.l}" x2="${pad.l}" y1="${pad.t}" y2="${pad.t+innerH}" stroke="#E8E6E3"/>
+    <line x1="${pad.l}" x2="${W-pad.r}" y1="${pad.t+innerH}" y2="${pad.t+innerH}" stroke="#E8E6E3"/>
+    ${bars}${ley}
+  </svg>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CHIPS TENDENCIA SEMANAL (por punto)
+// ─────────────────────────────────────────────────────────────────────────────
+function tendChips(punto){
+  return SERIES_SEM[punto].map((sem,i) => {
+    const tot = sem[0]+sem[1]+sem[2];
+    return `<span class="tend-chip" style="background:${COLORES_SEM[i]}">${tot}</span>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER GENERAL
+// ─────────────────────────────────────────────────────────────────────────────
+function renderGeneral(){
+  // KPIs globales
+  let totR={c:0,d:0,p:0}, totM={c:0,d:0,p:0};
+  PUNTOS.forEach(p => {
+    totR.c+=REAL[p].c; totR.d+=REAL[p].d; totR.p+=REAL[p].p;
+    totM.c+=META[p].c; totM.d+=META[p].d; totM.p+=META[p].p;
+  });
+  const totReal=totR.c+totR.d+totR.p;
+  const totMeta=totM.c+totM.d+totM.p;
+  const pctTot=pct(totReal,totMeta);
+  const puntosOk=PUNTOS.filter(p=>{
+    const r=REAL[p],m=META[p];
+    return pct(r.c+r.d+r.p,m.c+m.d+m.p)>=52;
+  });
+  const mejorPunto=PUNTOS.reduce((a,b)=>{
+    const pa=pct(REAL[a].c+REAL[a].d+REAL[a].p,META[a].c+META[a].d+META[a].p);
+    const pb=pct(REAL[b].c+REAL[b].d+REAL[b].p,META[b].c+META[b].d+META[b].p);
+    return pb>pa?b:a;
+  });
+  const mejorTot=SERIES_SEM[mejorPunto].map(s=>s[0]+s[1]+s[2]);
+
+  const kpis=`
+  <div class="kpi-grid">
+    <div class="kpi-tile">
+      <div class="kpi-label">Total vendido</div>
+      <div class="kpi-val">${fmt(totReal)}</div>
+      <div class="kpi-sub">de ${fmt(totMeta)} meta</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">% cumplimiento</div>
+      <div class="kpi-val kpi-${pctTot>=25?'ok':pctTot>=15?'warn':'bad'}">${pctS(totReal,totMeta)}</div>
+      <div class="kpi-sub">${fmt(totMeta-totReal)} und. restantes campaña</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Puntos en meta</div>
+      <div class="kpi-val kpi-ok">${puntosOk.length} de ${PUNTOS.length}</div>
+      <div class="kpi-sub">${puntosOk.join(' · ')}</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Mejor punto Sem 1</div>
+      <div class="kpi-val">${mejorPunto}</div>
+      <div class="kpi-sub">${fmt(mejorTot[0])} und · ${pctS(REAL[mejorPunto].c+REAL[mejorPunto].d+REAL[mejorPunto].p,META[mejorPunto].c+META[mejorPunto].d+META[mejorPunto].p)}</div>
+    </div>
+  </div>`;
+
+  // tabla resultados
+  const filas=PUNTOS.map(p=>{
+    const r=REAL[p],m=META[p];
+    const tot=r.c+r.d+r.p, metaTot=m.c+m.d+m.p;
+    const p_=pct(tot,metaTot);
+    // mini barras de los 3 productos (escala dentro del punto)
+    const maxProd=Math.max(r.c,r.d,r.p,1);
+    const miniC=Math.round(r.c/maxProd*60), miniD=Math.round(r.d/maxProd*60), miniP=Math.round(r.p/maxProd*60);
+    return `<tr>
+      <td class="td-punto">${p}</td>
+      <td class="td-total">${fmt(tot)}</td>
+      <td class="td-right" style="color:var(--gris3)">${fmt(metaTot)}</td>
+      <td class="td-meta-pct"><span class="badge-pct ${claseBadge(p_)}">${pctS(tot,metaTot)} ${textoEstado(p_)}</span></td>
+      <td class="td-right">
+        <div class="mini-prod-row">
+          <span class="mini-prod-bar" style="width:${miniC}px;background:var(--naranja)"></span>${r.c}
+          <span class="mini-prod-bar" style="width:${miniD}px;background:var(--morado);margin-left:4px"></span>${r.d}
+          <span class="mini-prod-bar" style="width:${miniP}px;background:var(--verde);margin-left:4px"></span>${r.p}
+        </div>
+      </td>
+      <td class="td-right">
+        <div class="tend-chips">${tendChips(p)}</div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const tabla=`
+  <div class="sec-titulo">Resultado por punto al día de hoy — Sem 1+2 acumulado (7–21 oct, 15 días)</div>
+  <table class="tabla-res">
+    <thead><tr>
+      <th>Punto</th>
+      <th style="text-align:right">Total real</th>
+      <th style="text-align:right">Meta campaña</th>
+      <th style="text-align:right">% meta</th>
+      <th style="text-align:right">Cajita · Dips · Postre</th>
+      <th style="text-align:right">Tendencia semanal</th>
+    </tr></thead>
+    <tbody>${filas}</tbody>
+  </table>`;
+
+  const grafSec=`
+  <div class="sec-titulo">Volumen por punto — todas las semanas</div>
+  <div class="grafico-wrap">${graficoSemanas()}</div>`;
+
+  document.getElementById('contenido').innerHTML = kpis + prodResumenCards() + tabla + grafSec;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER PUNTO
+// ─────────────────────────────────────────────────────────────────────────────
+function renderPunto(punto){
+  const r=REAL[punto], m=META[punto], info=INFO[punto];
+  const pc={c:pctS(r.c,m.c), d:pctS(r.d,m.d), p:pctS(r.p,m.p)};
+  const py={c:proy(r.c), d:proy(r.d), p:proy(r.p)};
+  const ingReal=r.c*28500+r.d*4500+r.p*9900;
+  const ingProy=py.c*28500+py.d*4500+py.p*9900;
+
+  const tiles=`
+  <div class="prod-kpi-row">
+    <div class="prod-tile">
+      <div class="pt-prod">Cajita Hechizada · $28.500</div>
+      <div class="pt-val" style="color:var(--naranja)">${fmt(r.c)}</div>
+      <div class="pt-sub">de ${fmt(m.c)} meta · ${pc.c}</div>
+      <div class="pt-barra"><div class="pt-fill" style="width:${Math.min(pct(r.c,m.c),100)}%;background:var(--naranja)"></div></div>
+    </div>
+    <div class="prod-tile">
+      <div class="pt-prod">Hechizos de Sabor · $4.500</div>
+      <div class="pt-val" style="color:var(--morado)">${fmt(r.d)}</div>
+      <div class="pt-sub">de ${fmt(m.d)} meta · ${pc.d}</div>
+      <div class="pt-barra"><div class="pt-fill" style="width:${Math.min(pct(r.d,m.d),100)}%;background:var(--morado)"></div></div>
+    </div>
+    <div class="prod-tile">
+      <div class="pt-prod">Postre Drácula · $9.900</div>
+      <div class="pt-val" style="color:var(--verde)">${fmt(r.p)}</div>
+      <div class="pt-sub">de ${fmt(m.p)} meta · ${pc.p}</div>
+      <div class="pt-barra"><div class="pt-fill" style="width:${Math.min(pct(r.p,m.p),100)}%;background:var(--verde)"></div></div>
+    </div>
+  </div>`;
+
+  const kpiIng=`
+  <div class="kpi-grid" style="grid-template-columns:1fr 1fr;margin-bottom:1rem">
+    <div class="kpi-tile">
+      <div class="kpi-label">Ingreso real semana 1</div>
+      <div class="kpi-val" style="font-size:18px">${fmtCOP(ingReal)}</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Proyección campaña al ritmo actual</div>
+      <div class="kpi-val" style="font-size:18px">${fmtCOP(ingProy)}</div>
+      <div class="kpi-sub">Cajitas ~${fmt(py.c)} · Dips ~${fmt(py.d)} · Postres ~${fmt(py.p)}</div>
+    </div>
+  </div>`;
+
+  const ritmoSec = tablaRitmo(punto);
+
+  const grafDia=`
+  <div class="sec-titulo">Ventas diarias · semana 1</div>
+  <div class="grafico-wrap" style="margin-bottom:1rem">${graficoDiario(punto)}</div>`;
+
+  const tendSec=`
+  <div class="sec-titulo" style="margin-bottom:.4rem">Tendencia semanal</div>
+  <div class="tend-chips" style="margin-bottom:1rem">${tendChips(punto)}</div>`;
+
+  const msg=`
+  <div class="msg-box">
+    <div class="msg-label">💬 Mensaje para ${info.director}</div>
+    <div class="msg-text">${MENSAJES[punto](r,m,pc,py)}</div>
+  </div>`;
+
+  const nota=info.contexto?`<div class="nota-box">⚠️ ${info.contexto}</div>`:'';
+
+  document.getElementById('contenido').innerHTML = `
+    <div class="punto-header">
+      <span class="punto-nombre">${punto}</span>
+      <span class="punto-director">— ${info.director}</span>
+    </div>
+    ${nota}
+    ${tiles}
+    ${ritmoSec}
+    ${kpiIng}
+    ${grafDia}
+    ${tendSec}
+    ${msg}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NAV
+// ─────────────────────────────────────────────────────────────────────────────
+let tabActual = 'general';
+function setTab(tab, btn){
+  tabActual = tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('activo'));
+  btn.classList.add('activo');
+  if(tab==='general') renderGeneral();
+  else renderPunto(tab);
+}
+
+// INIT
+renderGeneral();
+</script>
+</body>
+</html>
+
+</body></html>
